@@ -8,7 +8,6 @@ async function onHelp(chat) {
 This is a list of all the commands this bot supports.
 
 /help - show this message
-/run - runs the scan command explicitly
 
 *Keyword commands*
 /keyword show
