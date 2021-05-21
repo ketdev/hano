@@ -11,7 +11,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/hano.js"
+            "program": "${workspaceFolder}/local.js",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

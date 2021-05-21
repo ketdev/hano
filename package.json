@@ -1,0 +1,28 @@
+{
+  "name": "hano",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ketdev/hano.git"
+  },
+  "author": "David Keter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ketdev/hano/issues"
+  },
+  "homepage": "https://github.com/ketdev/hano#readme",
+  "dependencies": {
+    "aws-sdk": "^2.911.0",
+    "cheerio": "^1.0.0-rc.9",
+    "chrome-aws-lambda": "^9.1.0",
+    "puppeteer-core": "^9.1.1",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "urijs": "^1.19.6"
+  }
+}
