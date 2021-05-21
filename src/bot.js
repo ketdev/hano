@@ -58,13 +58,14 @@ async function onWebsiteAdd(chat, match) {
     const websites = match[1].split(' ');
     const user = await hanodb.loadUserOrCreate(chat.id);
     user.websites = unique(user.websites.concat(websites));
-    await hanodb.storeUser(user);
-    await telegram.sendMessage(chat.id, `Added website${websites.length > 0 ? 's' : ''}!`);
 
     // store as new website
     const visits = await hanodb.loadVisits();
     const newWebsites = await hanodb.loadNewWebsites();
-    await crawl.storeVisits(visits, newWebsites);
+    await hanodb.storeVisits(visits, newWebsites.concat(websites.filter(x=>!visits.includes(x))));
+
+    await hanodb.storeUser(user);
+    await telegram.sendMessage(chat.id, `Added website${websites.length > 0 ? 's' : ''}!`);
 }
 async function onWebsiteDel(chat, match) {
     const websites = match[1].split(' ');

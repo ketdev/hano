@@ -54,20 +54,17 @@ exports.run = async (event) => {
         // Update visited by new websites
         for (const website of newWebsites) {
             const html = await puppet.readBrowserPage(browser, website);
+            if (!html) continue;
             const links = crawl(website, html);
             visits = unique(visits.concat(links));
-        }
-
-        // Read all websites
-        let websiteData = {};
-        for (const website of websites) {
-            websiteData[website] = await puppet.readBrowserPage(browser, website);
+            await hanodb.storeVisits(visits, []);
         }
 
         // Check new links for matches
         let found = [];
-        for (const website in websiteData) {
-            const html = websiteData[website];
+        for (const website of websites) {
+            const html = await puppet.readBrowserPage(browser, website);
+            if (!html) continue;
             const newLinks = crawl(website, html).filter(x => !visits.includes(x));
 
             for (const link of newLinks) {
@@ -88,10 +85,8 @@ exports.run = async (event) => {
 
             // update visits
             visits = unique(visits.concat(newLinks));
+            await hanodb.storeVisits(visits, []);
         }
-
-        // update visits for next run
-        await hanodb.storeVisits(visits, []);
 
         // Report to relevant users
         for (const find of found) {
