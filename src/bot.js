@@ -1,6 +1,6 @@
 const telegram = require('./telegram');
 const { unique } = require('./utils');
-const hanodb = require('./hanodb');
+const hanodb = require('./db/hanodb');
 const crawl = require('./crawl');
 
 async function onHelp(chat) {

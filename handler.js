@@ -4,7 +4,8 @@
 // serverless deploy
 
 const bot = require('./src/bot');
-const crawl = require('./src/crawl');
+// const crawl = require('./src/crawl');
+const rss = require('./src/rss');
 
 // Called from telegram webhook
 exports.hanobot = async event => {
@@ -22,14 +23,30 @@ exports.hanobot = async event => {
 };
 
 // Called from CloudWatch scheduled event
-exports.hanocron = (event, context, callback) => {
+// function puppeteerCrawl (event, context, callback) {
+//   try {
+//     console.log('Received event:', JSON.stringify(event, null, 2));
+//     crawl.run(event).finally(() => {
+//       callback(null, 'Finished');
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     callback(null, 'Finished');
+//   }
+// }
+
+function rssScan(event, context, callback) {
   try {
-    console.log('Received event:', JSON.stringify(event, null, 2));
-    crawl.run(event).finally(() => {
+    // console.log('Received event:', JSON.stringify(event, null, 2));
+    rss.run().catch(err => {
+      console.log(err);
+    }).finally(() => {
       callback(null, 'Finished');
     });
   } catch (error) {
     console.log(error);
     callback(null, 'Finished');
   }
-};
+}
+
+exports.hanocron = rssScan;

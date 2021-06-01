@@ -2,9 +2,10 @@
 var URI = require('urijs');
 const cheerio = require('cheerio');
 const { unique } = require('./utils');
-const hanodb = require('./hanodb');
+const hanodb = require('./db/hanodb');
 const puppet = require('./puppet');
 const telegram = require('./telegram');
+const keymatch = require('./keymatch');
 
 function htmlSelector(html, selector) {
     const $ = cheerio.load(html);
@@ -28,15 +29,6 @@ function crawl(url, html) {
         return new URL(x).toString();
     });
     return unique(fullLink);
-}
-
-function matchKeywords(text, keywords) {
-    var regexMetachars = /[(){[*+?.\\^$|]/g;
-    for (var i = 0; i < keywords.length; i++) {
-        keywords[i] = keywords[i].replace(regexMetachars, "\\$&");
-    }
-    var regex = new RegExp("(?:" + keywords.join("|") + ")", "gi");
-    return text.match(regex) || [];
 }
 
 exports.run = async (event) => {
@@ -65,15 +57,15 @@ exports.run = async (event) => {
         for (const website of websites) {
             const html = await puppet.readBrowserPage(browser, website);
             if (!html) continue;
-            const newLinks = crawl(website, html).filter(x => !visits.includes(x));
 
+            const newLinks = crawl(website, html).filter(x => !visits.includes(x));
             for (const link of newLinks) {
                 const data = await puppet.readBrowserPage(browser, link);
                 if (data == null) {
                     console.log(`Failed to read link: ${link}`);
                     continue;
                 }
-                const match = unique(matchKeywords(data, keywords).map(x => x.toLowerCase()));
+                const match = unique(keymatch.matchKeywords(data, keywords).map(x => x.toLowerCase()));
                 if (match.length > 0) {
                     found.push({
                         website: website,

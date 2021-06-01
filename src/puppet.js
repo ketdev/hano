@@ -2,7 +2,7 @@
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const { unique } = require('./utils');
-const hanodb = require('./hanodb');
+const hanodb = require('./db/hanodb');
 var URI = require('urijs');
 
 // USING PUPPETEER
@@ -16,17 +16,17 @@ exports.browser = async (callback) => {
     let browser = null;
     try {
         // Load browser
-        // browser = await puppeteer.launch({ 
-        //     headless: false,
-        //     executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' 
-        // });
-        browser = await chromium.puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath,
-            headless: chromium.headless,
-            ignoreHTTPSErrors: true,
+        browser = await puppeteer.launch({ 
+            headless: false,
+            executablePath: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe' 
         });
+        // browser = await chromium.puppeteer.launch({
+        //     args: chromium.args,
+        //     defaultViewport: chromium.defaultViewport,
+        //     executablePath: await chromium.executablePath,
+        //     headless: chromium.headless,
+        //     ignoreHTTPSErrors: true,
+        // });
 
         await callback(browser);
 
@@ -56,6 +56,7 @@ exports.readBrowserPage = async (browser, uri) => {
 
         // disable images
         await page.setRequestInterception(true);
+        await page.setDefaultNavigationTimeout(10000);
         page.on('request', (request) => {
             if (request.resourceType() === 'image'
                 || request.resourceType() === 'stylesheet'
