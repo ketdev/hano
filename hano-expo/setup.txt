@@ -1,0 +1,26 @@
+Installation
+
+- npm install --global expo-cli
+- expo init my-project
+- expo install expo-background-fetch expo-task-manager react-native-webview expo-notifications @react-native-async-storage/async-storage 
+
+To run your project, navigate to the directory and run one of the following yarn commands.
+
+- yarn start # you can open iOS, Android, or web from here, or run them directly with the commands below.
+- yarn android
+- yarn ios # requires an iOS device or macOS for access to an iOS simulator
+- yarn web
+
+
+https://docs.expo.io/distribution/building-standalone-apps/
+
+expo build:android 
+expo build:ios
+
+https://docs.expo.io/distribution/app-signing/
+
+https://chafikgharbi.com/expo-background-task/
+
+
+https://docs.expo.io/push-notifications/overview/
+https://docs.expo.io/versions/latest/sdk/async-storage/

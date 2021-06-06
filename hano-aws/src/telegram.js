@@ -12,7 +12,7 @@
 const rp = require('request-promise');
 
 // Create a bot that uses 'polling' to fetch new updates
-const TELEGRAM_TOKEN = 'XXXXXXXXXXXXXXXXXXXXXX'; // http://t.me/TGHanoBot
+const TELEGRAM_TOKEN = '1870141167:AAFTIEDYx3wG0YNR_M2zUbm67_k9cqYbzL4'; // http://t.me/TGHanoBot
 
 // -- Formatting --
 // *bold text*
