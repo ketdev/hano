@@ -1,76 +1,94 @@
-import { StatusBar } from 'expo-status-bar';
+import 'react-native-gesture-handler';
+
+// Import React and Component
 import React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Text, View, Button, Platform } from 'react-native';
-import { WebView } from "react-native-webview"
-import * as BackgroundFetch from "expo-background-fetch"
-import * as TaskManager from "expo-task-manager"
+import { DefaultTheme, DarkTheme } from 'react-native-paper';
+import { processColor } from 'react-native';
+import color from 'color';
+import { Provider as PaperProvider } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const TASK_NAME = "BACKGROUND_TASK"
+// Import Navigators from React Navigation
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-TaskManager.defineTask(TASK_NAME, () => {
-  try {
-    // fetch data here...
-    const receivedNewData = "Simulated fetch " + Math.random()
-    console.log("My task ", receivedNewData)
-    return receivedNewData
-      ? BackgroundFetch.Result.NewData
-      : BackgroundFetch.Result.NoData
-  } catch (err) {
-    return BackgroundFetch.Result.Failed
-  }
-});
+// Import Screens
+import MainView from './src/MainView';
 
-const registerTaskAsync = async () => {
-  try {
-    await BackgroundFetch.registerTaskAsync(TASK_NAME, {
-      minimumInterval: 5, // seconds,
-    })
-    console.log("Task registered")
-  } catch (err) {
-    console.log("Task Register failed:", err)
-  }
-}
+// Import Screens
+import SplashScreen from './src/t/SplashScreen';
+import LoginScreen from './src/t/LoginView';
+import RegisterScreen from './src/t/RegisterView';
+import DrawerNavigationRoutes from './src/t/DrawerNavigationRoutes';
 
 
-function BackgroundTask(props) {
+const Stack = createStackNavigator();
+
+const Auth = () => {
+  // Stack Navigator for Login and Sign up Screen
   return (
-    <WebView
-      onMessage={props.function}
-      source={{
-        html: `<script>
-          setInterval(()=>{window.ReactNativeWebView.postMessage("");}, ${props.interval})
-          </script>`,
-      }}
-    />
-  )
-}
-
-
-export default function App() {
-  useEffect(() => {
-    registerTaskAsync();
-  }, []);
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <BackgroundTask
-        interval={1000}
-        function={() => {
-          console.log("My task " + Math.random());
+    <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RegisterScreen"
+        component={RegisterScreen}
+        options={{
+          title: 'Register', //Set Header Title
+          headerStyle: {
+            backgroundColor: '#307ecc', //Set Header color
+          },
+          headerTintColor: '#fff', //Set Header text color
+          headerTitleStyle: {
+            fontWeight: 'bold', //Set Header text style
+          },
         }}
       />
-      <StatusBar style="auto" />
-    </View>
+    </Stack.Navigator>
+  );
+};
+
+const App = () => {
+  return (
+    <PaperProvider theme={theme}>
+      {/* <MainView /> */}
+
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="SplashScreen">
+          <Stack.Screen
+            name="SplashScreen"
+            component={SplashScreen}
+            // Hiding header for Splash Screen
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Auth"
+            component={Auth}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="DrawerNavigationRoutes"
+            component={DrawerNavigationRoutes}
+            // Hiding header for Navigation Drawer
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+
+    </PaperProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    // justifyContent: 'center',
-    justifyContent: 'space-around',
+const theme = {
+  ...DefaultTheme,
+  dark: false,
+  mode: 'adaptive', // exact
+  colors: {
+    ...DefaultTheme.colors
   },
-});
+};
+
+export default App;

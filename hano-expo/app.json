@@ -19,9 +19,7 @@
     "ios": {
       "bundleIdentifier": "com.ketdev.hano",
       "supportsTablet": true,      
-      "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch"]
-      }
+      "infoPlist": {}
     },
     "android": {
       "package": "com.ketdev.hano",

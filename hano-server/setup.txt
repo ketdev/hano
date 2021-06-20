@@ -1,0 +1,35 @@
+
+Firebase
+    https://www.youtube.com/watch?v=LOeioOKUKI8&ab_channel=Firebase
+    [one time] npm i -g firebase-tools
+    firebase login
+    firebase init functions
+
+    cd functions
+    npm i express firebase-admin --save
+
+    cd ..
+    [local emulation]   firebase serve
+    [remote deploy]     firebase deploy
+    
+    https://firebase.google.com/docs/admin/setup?authuser=4
+
+
+Setup express server
+    https://www.tutorialspoint.com/nodejs/nodejs_express_framework.htm
+
+    npm install express body-parser cookie-parser multer busboy --save
+
+Using router
+    https://expressjs.com/en/4x/api.html#router
+
+---------------
+https://blog.logrocket.com/natural-language-processing-for-node-js/
+http://naturalnode.github.io/natural/tfidf.html
+
+cd functions
+npm install rss-parser natural cheerio request request-promise
+
+---------------
+get brand logos
+https://brandeps.com/logo/T/The-New-York-Times-01

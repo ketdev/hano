@@ -2,7 +2,8 @@ Installation
 
 - npm install --global expo-cli
 - expo init my-project
-- expo install expo-background-fetch expo-task-manager react-native-webview expo-notifications @react-native-async-storage/async-storage 
+- expo install axios react-native-paper expo-notifications @react-native-async-storage/async-storage 
+
 
 To run your project, navigate to the directory and run one of the following yarn commands.
 
@@ -24,3 +25,10 @@ https://chafikgharbi.com/expo-background-task/
 
 https://docs.expo.io/push-notifications/overview/
 https://docs.expo.io/versions/latest/sdk/async-storage/
+
+
+https://aboutreact.com/react-native-login-and-signup/#Appjs
+- expo install @react-navigation/native @react-navigation/stack
+- expo install react-native-gesture-handler
+- expo install react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
+- expo install @react-navigation/drawer
