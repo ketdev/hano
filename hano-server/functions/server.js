@@ -28,22 +28,20 @@ app.get('/api/user', auth, getUserDetail);
 app.post('/api/user', auth, updateUserDetails);
 app.post('/api/user/image', auth, uploadProfilePhoto);
 
-// ---
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
 // Handles any requests that don't match the ones above
 app.get('*', (req, res) => {
     res.send("hano-server");
     // res.sendFile(path.join(__dirname, '../view/build/index.html'));
 });
 
+
+// ----------------------------------------------------------------------------
+// REST API
+// ----------------------------------------------------------------------------
 exports.api = functions.https.onRequest(app);
 
-// ---
 // ----------------------------------------------------------------------------
+// SCHEDULED FUNCTION
 // ----------------------------------------------------------------------------
-
 const { run } = require('./cron/cron');
-
 exports.scheduledFunction = functions.pubsub.schedule('every 5 minutes').onRun(run);
