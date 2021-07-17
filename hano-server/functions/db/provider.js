@@ -1,9 +1,9 @@
 const db = require('./_db');
 
 const PATH = `/provider`;
-exports.provider = (name, imageUrl, feedIDs) => ({ 
+exports.provider = (name, imageName, feedIDs) => ({ 
     name, 
-    imageUrl, 
+    imageName, 
     feedIDs 
 });
 
@@ -24,6 +24,6 @@ exports.addFeed = async (id, feedIDs) => {
 exports.createProviderWithFeeds = async (name, image, feeds) => {
     const Feeds = require('./feeds');
     const pId = await exports.add(exports.provider(name, image, []));
-    const feedIds = await Promise.all(feeds.map(async f => await Feeds.add(Feeds.feed(pId, f.language, f.selector, f.links))));
+    const feedIds = await Promise.all(feeds.map(async f => await Feeds.add(Feeds.feed(pId, f.language, f.selector, f.imageSelector, f.links, f.ignore))));
     await exports.addFeed(pId, feedIds);
 };

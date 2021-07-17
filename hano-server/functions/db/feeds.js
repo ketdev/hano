@@ -1,8 +1,8 @@
 const db = require('./_db');
 
 const PATH = `/feeds`;
-exports.feed = (providerID, language, selector, links) => ({ 
-    providerID, language, selector, links
+exports.feed = (providerID, language, selector, imageSelector, links, ignore) => ({ 
+    providerID, language, selector, imageSelector, links, ignore
 });
 
 exports.foreach = async (callback) => await db.foreach(PATH, callback);

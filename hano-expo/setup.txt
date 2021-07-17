@@ -32,3 +32,16 @@ https://aboutreact.com/react-native-login-and-signup/#Appjs
 - expo install react-native-gesture-handler
 - expo install react-native-reanimated react-native-gesture-handler react-native-screens react-native-safe-area-context @react-native-community/masked-view
 - expo install @react-navigation/drawer
+
+
+
+- expo install axios
+
+https://docs.expo.io/versions/latest/sdk/securestore/
+- expo install expo-secure-store
+
+https://snack.expo.io/@documentation/lottie-example
+expo install lottie-react-native
+
+https://javascript.plainenglish.io/expo-react-native-redux-9f9e3cb04967
+expo install redux react-redux

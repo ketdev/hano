@@ -9,7 +9,7 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {logout} from '../api/account';
 
 const CustomSidebarMenu = (props) => {
   return (
@@ -48,8 +48,8 @@ const CustomSidebarMenu = (props) => {
                 },
                 {
                   text: 'Confirm',
-                  onPress: () => {
-                    AsyncStorage.clear();
+                  onPress: async () => {
+                    await logout();
                     props.navigation.replace('Auth');
                   },
                 },

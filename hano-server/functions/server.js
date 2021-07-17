@@ -1,47 +1,55 @@
 const functions = require('firebase-functions');
 const express = require('express');
-const path = require('path');
 
 // Setup express app
 const app = express()
 
-// NOTE: firebase configured to only route paths starting with 'api', so all must start with it
-
 // ----------------------------------------------------------------------------
-// Account Management
+// REST API
 // ----------------------------------------------------------------------------
 
-// authentication
-const auth = require('./api/access/auth');
+// Account authentication
+const { register, login, auth, getAccount } = require('./api/account');
+app.post('/api/account/register', register);
+app.post('/api/account/login', login);
+app.get('/api/account', auth, getAccount);
 
-// users api
-const {
-    signUpUser,
-    loginUser,
-    getUserDetail,
-    updateUserDetails,
-    uploadProfilePhoto
-} = require('./api/access/user');
-app.post('/api/user/signup', signUpUser);
-app.post('/api/user/login', loginUser);
-app.get('/api/user', auth, getUserDetail);
-app.post('/api/user', auth, updateUserDetails);
-app.post('/api/user/image', auth, uploadProfilePhoto);
+// Keywords
+const { getKeywords, setKeywords } = require('./api/account');
+app.get('/api/keywords', auth, getKeywords);
+app.post('/api/keywords', auth, setKeywords);
+
+// -----------
+// // Blacklist Provider IDs
+// const { getBlacklistProviderIDs, setBlacklistProviderIDs } = require('./api/account');
+// app.get('/api/blacklist', auth, getBlacklistProviderIDs);
+// app.post('/api/blacklist', auth, setBlacklistProviderIDs);
+
+// Providers
+const { accountProviders } = require('./api/providers');
+app.get('/api/providers', auth, accountProviders);
+
+// Article Matches
+const { accountArticles } = require('./api/articles');
+app.get('/api/articles', auth, accountArticles);
+
 
 // Handles any requests that don't match the ones above
 app.get('*', (req, res) => {
+    // return res.status(404);
     res.send("hano-server");
     // res.sendFile(path.join(__dirname, '../view/build/index.html'));
 });
 
-
-// ----------------------------------------------------------------------------
-// REST API
-// ----------------------------------------------------------------------------
 exports.api = functions.https.onRequest(app);
 
 // ----------------------------------------------------------------------------
 // SCHEDULED FUNCTION
 // ----------------------------------------------------------------------------
 const { run } = require('./cron/cron');
-exports.scheduledFunction = functions.pubsub.schedule('every 5 minutes').onRun(run);
+
+const runtimeOpts = {
+    timeoutSeconds: 60 * 1, // 1 minute
+    memory: '1GB'
+  }
+exports.scheduledFunction = functions.runWith(runtimeOpts).pubsub.schedule('every 10 minutes').onRun(run);

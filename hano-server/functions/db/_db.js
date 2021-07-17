@@ -35,6 +35,17 @@ exports.where = async (path, field, op, value) => {
     });
     return docs;
 };
+exports.first = async (path, field, op, value) => {
+    const articlesRef = firestore.collection(path);
+    const raw = await articlesRef.where(field, op, value).limit(1).get();
+    let docs = [];
+    raw.forEach((line) => {
+        const id = line.id;
+        const data = line.data();
+        docs.push({ id, ...data });
+    });
+    return docs.length > 0 ? docs[0] : null;
+};
 
 exports.query = async (path, id) => {
     const doc = await firestore.collection(path).doc(id).get();
