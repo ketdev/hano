@@ -20,6 +20,7 @@ exports.accountArticles = async (request, response) => {
                 url: article.url, 
                 language: article.language, 
                 title: article.title, 
+                image: article.image,
                 description: article.description, 
                 author: article.author, 
                 pubDate: article.pubDate

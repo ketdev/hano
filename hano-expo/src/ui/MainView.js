@@ -4,15 +4,17 @@ import { Text, View } from 'react-native';
 
 //--------------
 import ArticlesView from './tabs/ArticlesView';
+import KeywordsView from './tabs/KeywordsView';
 import KeywordsScreen from '../t/KeywordsScreen';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { refreshArticles } from '../model/action';
+import { refreshArticles, refreshAccount } from '../model/action';
 
 export default function MainView(props) {
   // Load articles on start
   const dispatch = useDispatch();
   React.useEffect(() => refreshArticles(dispatch), []);
+  React.useEffect(() => refreshAccount(dispatch), []);
   const articles = useSelector(state => state.articles);
 
   // Set routes
@@ -33,7 +35,7 @@ export default function MainView(props) {
     // saved: BookmarkedView,
     articles: ArticlesView,
     // history: HistoryView,
-    keywords: KeywordsScreen,
+    keywords: KeywordsView,
   });
 
   return (

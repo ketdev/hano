@@ -9,9 +9,8 @@ const app = express()
 // ----------------------------------------------------------------------------
 
 // Account authentication
-const { register, login, auth, getAccount } = require('./api/account');
-app.post('/api/account/register', register);
-app.post('/api/account/login', login);
+const { access, auth, getAccount } = require('./api/account');
+app.post('/api/account', access);
 app.get('/api/account', auth, getAccount);
 
 // Keywords

@@ -1,24 +1,28 @@
 // Import React and Component
-import React, {useState, createRef} from 'react';
+import React, { useState, createRef } from 'react';
 import {
   StyleSheet,
   TextInput,
   View,
   Text,
   ScrollView,
+  Icon,
   Image,
   Keyboard,
   TouchableOpacity,
+  TouchableHighlight,
   KeyboardAvoidingView,
 } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 import Loader from './Loader';
+import * as Theme from '../theme';
 
-import { login } from '../api/account';
+import { emailAccess } from '../api/account';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
+
   const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
 
@@ -30,15 +34,11 @@ const LoginScreen = ({navigation}) => {
       alert('Please fill Email');
       return;
     }
-    if (!userPassword) {
-      alert('Please fill Password');
-      return;
-    }
 
-    setLoading(true);    
+    setLoading(true);
     try {
-      await login(userEmail, userPassword);
-      navigation.replace('MainView');    
+      await emailAccess(userEmail);
+      navigation.replace('MainView');
     } catch (error) {
       setLoading(false);
       console.error(error);
@@ -46,82 +46,100 @@ const LoginScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.mainBody}>
+    <View style={styles.mainView}>
+      <StatusBar style="dark" />
       <Loader loading={loading} />
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}>
-        <View>
-          <KeyboardAvoidingView enabled>
-            <View style={{alignItems: 'center'}}>
-              <Image
-                source={require('../../assets/icon.png')}
-                style={{
-                  width: '50%',
-                  height: 100,
-                  resizeMode: 'contain',
-                  margin: 30,
-                }}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserEmail) =>
-                  setUserEmail(UserEmail)
-                }
-                placeholder="Enter Email" //dummy@abc.com
-                placeholderTextColor="#8b9cb5"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  passwordInputRef.current &&
-                  passwordInputRef.current.focus()
-                }
-                underlineColorAndroid="#f000"
-                blurOnSubmit={false}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserPassword) =>
-                  setUserPassword(UserPassword)
-                }
-                placeholder="Enter Password" //12345
-                placeholderTextColor="#8b9cb5"
-                keyboardType="default"
-                ref={passwordInputRef}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={true}
-                underlineColorAndroid="#f000"
-                returnKeyType="next"
-              />
-            </View>
-            {errortext != '' ? (
-              <Text style={styles.errorTextStyle}>
-                {errortext}
-              </Text>
-            ) : null}
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>LOGIN</Text>
-            </TouchableOpacity>
-            <Text
-              style={styles.registerTextStyle}
-              onPress={() => navigation.navigate('RegisterScreen')}>
-              New Here ? Register
+        contentContainerStyle={styles.content}>
+        <KeyboardAvoidingView enabled>
+
+          <View style={styles.section}>
+            <Text style={styles.titleText}>
+              Welcome!
             </Text>
-          </KeyboardAvoidingView>
-        </View>
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.subtitleText}>
+              Enter your email to create {"\n"}
+              or access your account
+            </Text>
+          </View>
+
+          {/* Error text */}
+          {errortext != '' ? (
+            <Text style={styles.errorTextStyle}>
+              {errortext}
+            </Text>
+          ) : null}
+
+          {/* Email input field */}
+          <View style={styles.inputView}>
+            <Theme.ICON_EMAIL style={styles.inputIcon} width={30} height={30} />
+            <TextInput
+              style={styles.inputText}
+              placeholder="user@email.com"
+              placeholderTextColor={Theme.TEXT_SOFT_COLOR}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              returnKeyType="next"
+              underlineColorAndroid="#f000"
+              blurOnSubmit={false}
+            //onSubmitEditing={() => }
+            />
+          </View>
+
+          {/* CONTINUE button */}
+          <TouchableHighlight
+            style={styles.continueView}
+            underlayColor={Theme.CONTINUE_BACKGROUND_BORDER}
+            // activeOpacity={0.5}
+            onPress={handleSubmitPress}>
+            <Text style={styles.continueText}>CONTINUE</Text>
+          </TouchableHighlight>
+
+
+          {/* OR separator */}
+          <View style={styles.separatorView}>
+            <Text style={styles.separatorText}>OR</Text>
+            <View style={styles.separatorLine}></View>
+          </View>
+
+          {/* Facebook button */}
+          <TouchableHighlight
+            style={styles.facebookView}
+            underlayColor={Theme.FACEBOOK_BACKGROUND_BORDER}
+            // activeOpacity={0.5}
+            onPress={handleSubmitPress}>
+            <View style={styles.facebookViewInner}>
+              <Text style={styles.facebookText}>Sign in with Facebook</Text>
+              <Theme.ICON_FACEBOOK style={styles.facebookIcon} width={40} height={40} />
+            </View>
+          </TouchableHighlight>
+
+          {/* Google button */}
+          <TouchableHighlight
+            style={styles.googleView}
+            underlayColor={Theme.GOOGLE_BACKGROUND_BORDER}
+            // activeOpacity={0.5}
+            onPress={handleSubmitPress}>
+            <View style={styles.googleViewInner}>
+              <Text style={styles.googleText}>Sign in with Google</Text>
+              <Theme.ICON_GOOGLE style={styles.googleIcon} width={40} height={40} />
+            </View>
+          </TouchableHighlight>
+
+          {/* Agreement */}
+          <View style={styles.section}>
+            <Text style={styles.agreementText}>
+              By registering, you agree with the {' '}
+            </Text>
+            <Text style={styles.agreementLinkText}>
+              Application Policy
+            </Text>
+          </View>
+
+        </KeyboardAvoidingView>
       </ScrollView>
     </View>
   );
@@ -129,58 +147,182 @@ const LoginScreen = ({navigation}) => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  mainBody: {
+  mainView: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#307ecc',
     alignContent: 'center',
+    backgroundColor: Theme.BACKGROUND_COLOR,
   },
-  SectionStyle: {
-    flexDirection: 'row',
-    height: 40,
-    marginTop: 20,
-    marginLeft: 35,
-    marginRight: 35,
-    margin: 10,
-  },
-  buttonStyle: {
-    backgroundColor: '#7DE24E',
-    borderWidth: 0,
-    color: '#FFFFFF',
-    borderColor: '#7DE24E',
-    height: 40,
-    alignItems: 'center',
-    borderRadius: 30,
-    marginLeft: 35,
-    marginRight: 35,
-    marginTop: 20,
-    marginBottom: 25,
-  },
-  buttonTextStyle: {
-    color: '#FFFFFF',
-    paddingVertical: 10,
-    fontSize: 16,
-  },
-  inputStyle: {
+  content: {
     flex: 1,
-    color: 'white',
-    paddingLeft: 15,
-    paddingRight: 15,
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#dadae8',
-  },
-  registerTextStyle: {
-    color: '#FFFFFF',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 14,
     alignSelf: 'center',
-    padding: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
+    width: Theme.CENTER_WIDTH,
+    // backgroundColor: '#f0f', // DEBUG
   },
-  errorTextStyle: {
-    color: 'red',
+  section: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+    // backgroundColor: '#ffff00', // DEBUG
+  },
+  titleText: {
+    fontFamily: Theme.FONT_BOLD,
+    fontSize: Theme.FONT_SIZE_TITLE,
+    color: Theme.TEXT_COLOR
+  },
+  subtitleText: {
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SUBTITLE,
+    color: Theme.TEXT_COLOR,
     textAlign: 'center',
-    fontSize: 14,
+    marginBottom: 20
   },
+
+  // Email input field
+  inputView: {
+    flexDirection: 'row',
+    marginVertical: 6,
+    height: 60,
+    width: Theme.CENTER_WIDTH,
+    backgroundColor: Theme.INPUT_BACKGROUND,
+    borderColor: Theme.INPUT_BACKGROUND_BORDER,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderTopWidth: 3
+  },
+  inputIcon: {
+    marginVertical: 13,
+    marginHorizontal: 20,
+    color: Theme.TEXT_SOFT_COLOR
+  },
+  inputText: {
+    flex: 1,
+    marginRight: 50, // (20+30)
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SUBTITLE,
+    color: Theme.TEXT_COLOR,
+    textAlign: 'center'
+  },
+
+  // CONTINUE button
+  continueView: {
+    marginVertical: 6,
+    justifyContent: 'center',
+    height: 60,
+    width: Theme.CENTER_WIDTH,
+    backgroundColor: Theme.CONTINUE_BACKGROUND,
+    borderColor: Theme.CONTINUE_BACKGROUND_BORDER,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderBottomWidth: 3
+  },
+  continueText: {
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SUBTITLE,
+    color: Theme.CONTINUE_TEXT_COLOR,
+    textAlign: 'center'
+  },
+
+  // Separator
+  separatorView: {
+    flexDirection: 'row',
+    marginVertical: 20,
+    justifyContent: 'center'
+  },
+  separatorText: {
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SUBTITLE,
+    color: Theme.TEXT_COLOR_DISABLED,
+    height: 20,
+    marginLeft: 10
+  },
+  separatorLine: {
+    flex: 1,
+    height: 2,
+    marginVertical: 9,
+    marginHorizontal: 10,
+    backgroundColor: Theme.INPUT_BACKGROUND
+  },
+
+  // Facebook button
+  facebookView: {
+    marginVertical: 6,
+    justifyContent: 'center',
+    height: 60,
+    width: Theme.CENTER_WIDTH,
+    backgroundColor: Theme.FACEBOOK_BACKGROUND,
+    borderColor: Theme.FACEBOOK_BACKGROUND_BORDER,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderBottomWidth: 3
+  },
+  facebookViewInner: {
+    flexDirection: 'row',
+  },
+  facebookIcon: {
+    marginVertical: 13,
+    marginHorizontal: 20,
+    color: Theme.CONTINUE_TEXT_COLOR,
+  },
+  facebookText: {
+    flex: 1,
+    alignSelf: 'center',
+    textAlign: 'left',
+    marginLeft: 25,
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SUBTITLE,
+    color: Theme.CONTINUE_TEXT_COLOR,
+  },
+
+  // Google button
+  googleView: {
+    marginVertical: 6,
+    justifyContent: 'center',
+    height: 60,
+    width: Theme.CENTER_WIDTH,
+    backgroundColor: Theme.GOOGLE_BACKGROUND,
+    borderColor: Theme.GOOGLE_BACKGROUND_BORDER,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderBottomWidth: 3
+  },
+  googleViewInner: {
+    flexDirection: 'row',
+  },
+  googleIcon: {
+    marginVertical: 13,
+    marginHorizontal: 20,
+    color: Theme.CONTINUE_TEXT_COLOR,
+  },
+  googleText: {
+    flex: 1,
+    alignSelf: 'center',
+    textAlign: 'left',
+    marginLeft: 25,
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SUBTITLE,
+    color: Theme.CONTINUE_TEXT_COLOR,
+  },
+
+  // Agreement text
+  agreementText: {
+    marginTop: 20, 
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SMALLPRINT,
+    color: Theme.TEXT_COLOR_DISABLED,
+    textAlign: 'center',
+    marginBottom: 20
+  },
+  agreementLinkText: {
+    marginTop: 20, 
+    fontFamily: Theme.FONT_SEMIBOLD,
+    fontSize: Theme.FONT_SIZE_SMALLPRINT,
+    color: Theme.TEXT_COLOR_DISABLED,
+    textAlign: 'center',
+    marginBottom: 20,
+    textDecorationLine: 'underline'
+  }
+
 });

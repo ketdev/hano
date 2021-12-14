@@ -1,8 +1,9 @@
 const db = require('./_db');
 
 const ACCOUNTS_PATH = `/accounts`;
-exports.account = (email, uid, keywords, blacklistProviderIDs) => ({ 
+exports.account = (email, code, uid, keywords, blacklistProviderIDs) => ({ 
     email,
+    code,
     uid,
     keywords, 
     blacklistProviderIDs, 

@@ -1,23 +1,50 @@
-import { post, get, getToken, setToken, delToken } from './_api';
+import * as api from './_api';
 
-exports.getToken = async () => {
-    return await getToken();
+exports.getAccount = async () => {
+    const response = await api.get('/api/account', true);
+    const account = response.data;
+    return account;
 };
 
-exports.login = async (email, password) => { 
-    const userData = {email, password};
-    const response = await post('/api/account/login', userData);
-    const token = response.data.token;
-    await setToken(token);
-    return token;
+exports.renewToken = async () => {
+    return await api.get('/api/account', true)
+        .then(_ => true)
+        .catch(async err => {
+            if (err.response.status === 403) { // Unauthorized
+                await api.delToken();
+                const email = await api.getEmail();
+                const code = await api.getCode();
+                return exports.emailAccess(email, code);
+            }
+            throw err;
+        });
+};
+
+exports.emailAccess = async (email, code) => {
+    const userData = { email, code };
+    return await api.post('/api/account', userData)
+        .then(async response => {
+            if (response.status == 200 && response.data.token === undefined) {
+                // need to send code
+                return false
+            } 
+            await api.setEmail(email);
+            await api.setCode(code || response.data.code);
+            await api.setToken(response.data.token);
+            return true;
+        })
+        .catch(async err => {
+            if (err.response.status === 400) { // Invalid
+                await api.delEmail();
+                await api.delCode();
+                return false;
+            }
+            throw err;
+        });
 };
 
 exports.logout = async () => {
-    await delToken();
-};
-
-exports.getAccount = async () => {
-    const response = await get('/api/account', true);
-    const account = response.data;
-    return account;
+    await api.delEmail();
+    await api.delCode();
+    await api.delToken();
 };

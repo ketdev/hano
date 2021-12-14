@@ -2,7 +2,8 @@
 export const reducer = (state = {
     loading: false,
     error: null,
-    articles: []
+    articles: [],
+    account: {}
 }, action) => {
     switch (action.type) {
         case 'ERROR':
@@ -21,6 +22,12 @@ export const reducer = (state = {
             return {
                 ...state,
                 articles: action.payload
+            };
+
+        case 'LOAD_ACCOUNT':
+            return {
+                ...state,
+                account: action.payload
             };
 
         default:

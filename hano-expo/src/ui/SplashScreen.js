@@ -3,24 +3,20 @@ import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 
 import { BACKGROUND_COLOR } from '../theme';
-import { getToken, getAccount, logout } from '../api/account';
+import { renewToken } from '../api/account';
 
 import LoadingComponent from './LoadingComponent';
 
 const SplashScreen = ({ navigation }) => {
+
   React.useEffect(() => {
     setTimeout(async () => {
-      let isLoggedIn = false;
-      const token = await getToken();
-      if (token != null) {
-        try {
-          await getAccount();
-          isLoggedIn = true;
-        } catch (error) {
-          logout();
-        }
+      try {
+        let isLoggedIn = await renewToken();
+        navigation.replace(isLoggedIn == true ? 'MainView' : 'Auth');        
+      } catch (error) {
+        navigation.replace('Auth');
       }
-      navigation.replace(isLoggedIn == true ? 'MainView' : 'Auth');
     }, 1500);
   }, []);
   

@@ -3,6 +3,7 @@ import React from 'react';
 import { DefaultTheme, Provider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useFonts } from 'expo-font';
 
 // Import Screens
 import MainView from './src/ui/MainView';
@@ -44,9 +45,18 @@ const Auth = () => {
 };
 
 const App = () => {
+  const [loaded] = useFonts({
+    QuicksandBold: require('./assets/fonts/Quicksand-Bold.ttf'),
+    QuicksandSemiBold: require('./assets/fonts/Quicksand-SemiBold.ttf'),
+    QuicksandMedium: require('./assets/fonts/Quicksand-Medium.ttf'),
+  });
+  
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <ReduxProvider store={store}>
-      <Provider theme={theme}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="SplashScreen">
             <Stack.Screen
@@ -66,18 +76,8 @@ const App = () => {
             />
           </Stack.Navigator>
         </NavigationContainer>
-      </Provider>
     </ReduxProvider>
   );
 }
-
-const theme = {
-  ...DefaultTheme,
-  dark: false,
-  mode: 'adaptive', // exact
-  colors: {
-    ...DefaultTheme.colors
-  },
-};
 
 export default App;
